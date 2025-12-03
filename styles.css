@@ -3174,8 +3174,8 @@ body {
     }
 
     .pricing-cards {
-        grid-template-columns: 1fr;
-        gap: 0.75rem !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.625rem !important;
         margin-top: 1.5rem !important;
     }
     
@@ -3427,6 +3427,11 @@ body {
 
     .about-features {
         grid-template-columns: 1fr;
+    }
+    
+    .pricing-cards {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
     }
     
     .pricing-card {
