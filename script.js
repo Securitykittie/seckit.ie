@@ -108,6 +108,18 @@ window.addEventListener('scroll', () => {
         navbar.classList.remove('scrolled');
     }
     
+    // Hide trust badges on mobile when scrolling
+    if (window.innerWidth <= 768) {
+        const mobileTrustBadges = document.querySelector('.trust-badges-mobile');
+        if (mobileTrustBadges) {
+            if (currentScroll > 100) {
+                mobileTrustBadges.classList.add('hidden');
+            } else {
+                mobileTrustBadges.classList.remove('hidden');
+            }
+        }
+    }
+    
     lastScroll = currentScroll;
 });
 
