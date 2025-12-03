@@ -3179,6 +3179,36 @@ body {
         margin-top: 1.5rem !important;
     }
     
+    /* Make the premium/free gift card span 2 columns and be shorter */
+    .pricing-card.premium,
+    .pricing-card[data-qty="5"] {
+        grid-column: span 2 !important;
+        padding: 0.75rem 0.875rem !important;
+        min-height: auto !important;
+    }
+    
+    .pricing-card.premium .pricing-card-header,
+    .pricing-card[data-qty="5"] .pricing-card-header {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .pricing-card.premium .pricing-amount,
+    .pricing-card[data-qty="5"] .pricing-amount {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .pricing-card.premium .pricing-details,
+    .pricing-card[data-qty="5"] .pricing-details {
+        margin-bottom: 0.5rem !important;
+        gap: 0.375rem !important;
+    }
+    
+    .pricing-card.premium .pricing-bonus-box,
+    .pricing-card[data-qty="5"] .pricing-bonus-box {
+        margin-top: 0.5rem !important;
+        padding: 0.5rem 0.625rem !important;
+    }
+    
     .pricing-card {
         padding: 0.875rem 0.75rem !important;
         min-height: auto !important;
@@ -3437,6 +3467,29 @@ body {
     .pricing-card {
         padding: 0.75rem 0.625rem !important;
         border-radius: 12px !important;
+    }
+    
+    /* Premium card spans 2 columns on very small screens too */
+    .pricing-card.premium,
+    .pricing-card[data-qty="5"] {
+        grid-column: span 2 !important;
+        padding: 0.625rem 0.75rem !important;
+    }
+    
+    .pricing-card.premium .pricing-card-header,
+    .pricing-card[data-qty="5"] .pricing-card-header {
+        margin-bottom: 0.375rem !important;
+    }
+    
+    .pricing-card.premium .pricing-amount,
+    .pricing-card[data-qty="5"] .pricing-amount {
+        margin-bottom: 0.375rem !important;
+    }
+    
+    .pricing-card.premium .pricing-bonus-box,
+    .pricing-card[data-qty="5"] .pricing-bonus-box {
+        margin-top: 0.375rem !important;
+        padding: 0.4375rem 0.5rem !important;
     }
     
     .pricing-card-header {
