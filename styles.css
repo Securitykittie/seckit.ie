@@ -3559,17 +3559,22 @@ body {
     
     /* Pricing Info Box - Bulk Discounts */
     .pricing-info {
-        padding: 1.25rem 0.875rem !important;
+        padding: 1rem 0.75rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .pricing-explanation {
+        margin-bottom: 0 !important;
     }
     
     .pricing-explanation h3 {
-        font-size: 1.125rem !important;
-        margin-bottom: 0.75rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.625rem !important;
     }
     
     .pricing-explanation p {
-        font-size: 0.875rem !important;
-        line-height: 1.5 !important;
+        font-size: 0.8125rem !important;
+        line-height: 1.45 !important;
     }
     
     .mission-text {
@@ -3871,17 +3876,22 @@ body {
     
     /* Pricing Info Box - Bulk Discounts */
     .pricing-info {
-        padding: 1rem 0.75rem !important;
+        padding: 0.875rem 0.625rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .pricing-explanation {
+        margin-bottom: 0 !important;
     }
     
     .pricing-explanation h3 {
-        font-size: 1rem !important;
-        margin-bottom: 0.625rem !important;
+        font-size: 0.9375rem !important;
+        margin-bottom: 0.5rem !important;
     }
     
     .pricing-explanation p {
-        font-size: 0.8125rem !important;
-        line-height: 1.45 !important;
+        font-size: 0.75rem !important;
+        line-height: 1.4 !important;
     }
     
     .mission-text {
