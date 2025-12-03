@@ -1817,85 +1817,6 @@ function initEnhancedParallax() {
     updateParallax();
 }
 
-// ============================================
-// EXIT INTENT POPUP
-// ============================================
-
-let exitIntentTriggered = false;
-
-function initExitIntent() {
-    // Check if user already interacted
-    if (localStorage.getItem('exitPopupShown') === 'true') {
-        return;
-    }
-    
-    // Track mouse movement
-    let mouseY = 0;
-    
-    document.addEventListener('mousemove', (e) => {
-        mouseY = e.clientY;
-    });
-    
-    // Detect exit intent (mouse moving towards top of screen)
-    document.addEventListener('mouseleave', (e) => {
-        if (e.clientY <= 0 && !exitIntentTriggered) {
-            showExitPopup();
-            exitIntentTriggered = true;
-        }
-    });
-    
-    // Mobile: detect back button or swipe up
-    let touchStartY = 0;
-    document.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-    });
-    
-    document.addEventListener('touchend', (e) => {
-        const touchEndY = e.changedTouches[0].clientY;
-        const swipeUp = touchStartY - touchEndY > 100;
-        
-        if (swipeUp && window.pageYOffset < 100 && !exitIntentTriggered) {
-            showExitPopup();
-            exitIntentTriggered = true;
-        }
-    });
-}
-
-function showExitPopup() {
-    const popup = document.getElementById('exitPopup');
-    if (popup) {
-        popup.classList.add('show');
-        updateStockCount(); // Update stock in popup
-    }
-}
-
-function closeExitPopup() {
-    const popup = document.getElementById('exitPopup');
-    if (popup) {
-        popup.classList.remove('show');
-        localStorage.setItem('exitPopupShown', 'true');
-    }
-}
-
-function handleExitPopupSubmit(event) {
-    event.preventDefault();
-    const email = event.target.querySelector('input[type="email"]').value;
-    
-    // Here you would typically send the email to your backend
-    console.log('Email captured:', email);
-    
-    // Show success message
-    showNotification('Thanks! Check your email for your discount code.', 'success');
-    
-    // Close popup
-    closeExitPopup();
-    
-    // You could redirect to a discount page or apply discount automatically
-    return false;
-}
-
-window.closeExitPopup = closeExitPopup;
-window.handleExitPopupSubmit = handleExitPopupSubmit;
 
 // ============================================
 // MOBILE IMPROVEMENTS
@@ -1951,7 +1872,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
         
         initLimitedOffer();
-        initExitIntent();
         initMobileImprovements();
         updateStockCount();
         
