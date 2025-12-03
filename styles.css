@@ -3565,7 +3565,7 @@ body {
         padding: 0.75rem 0.875rem !important;
         gap: 0.875rem !important;
         flex-direction: row !important;
-        align-items: center !important;
+        align-items: flex-start !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-image-wrapper,
@@ -3580,12 +3580,19 @@ body {
     .product-card-special .product-card-inner > h3 {
         font-size: 0.9375rem !important;
         text-align: left !important;
+        margin-top: 0 !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-card-inner > p,
     .product-card-special .product-card-inner > p {
         font-size: 0.75rem !important;
         text-align: left !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] .special-badge,
+    .product-card-special .special-badge {
+        font-size: 0.75rem !important;
+        padding: 0.375rem 0.75rem !important;
     }
 
     .about-features {
