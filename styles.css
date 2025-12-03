@@ -3191,6 +3191,8 @@ body {
         min-width: 0 !important;
         display: flex !important;
         flex-direction: column !important;
+        justify-content: center !important;
+        padding-left: 0.5rem !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-select-indicator,
@@ -3231,6 +3233,7 @@ body {
         margin-bottom: 0 !important;
         text-align: left !important;
         width: auto !important;
+        align-self: flex-start !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-quantity-controls,
