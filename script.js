@@ -976,19 +976,25 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
+    
+    // Check if mobile
+    const isMobile = window.innerWidth <= 768;
+    
     notification.style.cssText = `
         position: fixed;
-        top: 100px;
-        right: 20px;
-        padding: 1rem 1.5rem;
+        top: ${isMobile ? '80px' : '100px'};
+        ${isMobile ? 'left: 0.75rem; right: 0.75rem;' : 'right: 20px;'}
+        padding: ${isMobile ? '0.75rem 1rem' : '1rem 1.5rem'};
         background: ${type === 'success' ? 'rgba(16, 185, 129, 0.9)' : type === 'warning' ? 'rgba(245, 158, 11, 0.9)' : 'rgba(99, 102, 241, 0.9)'};
         color: white;
-        border-radius: 12px;
+        border-radius: ${isMobile ? '10px' : '12px'};
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         z-index: 10000;
         animation: slideInRight 0.3s ease-out;
         backdrop-filter: blur(10px);
         font-weight: 500;
+        font-size: ${isMobile ? '0.875rem' : '1rem'};
+        max-width: ${isMobile ? 'none' : '400px'};
     `;
     
     document.body.appendChild(notification);
