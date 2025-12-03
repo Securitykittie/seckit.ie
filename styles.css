@@ -3158,6 +3158,46 @@ body {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 1rem !important;
     }
+    
+    /* Make Black & Blue card span 2 columns and be shorter */
+    .product-card[data-name="Black & Blue"],
+    .product-card-special {
+        grid-column: span 2 !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] .product-card-inner,
+    .product-card-special .product-card-inner {
+        padding: 0.875rem 1rem !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] .product-image-wrapper,
+    .product-card-special .product-image-wrapper {
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: 0 !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] h3,
+    .product-card-special h3 {
+        margin-bottom: 0.25rem !important;
+        font-size: 1rem !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] p,
+    .product-card-special p {
+        margin-bottom: 0.5rem !important;
+        font-size: 0.8125rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] .product-quantity-controls,
+    .product-card-special .product-quantity-controls {
+        margin-top: 0 !important;
+    }
 
     .floating-cart {
         bottom: 1rem;
@@ -3491,6 +3531,29 @@ body {
     }
     
     .product-card p {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Black & Blue card on very small screens */
+    .product-card[data-name="Black & Blue"] .product-card-inner,
+    .product-card-special .product-card-inner {
+        padding: 0.75rem 0.875rem !important;
+        gap: 0.875rem !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] .product-image-wrapper,
+    .product-card-special .product-image-wrapper {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] h3,
+    .product-card-special h3 {
+        font-size: 0.9375rem !important;
+    }
+    
+    .product-card[data-name="Black & Blue"] p,
+    .product-card-special p {
         font-size: 0.75rem !important;
     }
 
