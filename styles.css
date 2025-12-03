@@ -3170,7 +3170,7 @@ body {
         padding: 0.875rem 1rem !important;
         display: flex !important;
         flex-direction: row !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         gap: 1rem !important;
         text-align: left !important;
     }
@@ -3184,16 +3184,30 @@ body {
         position: relative !important;
     }
     
+    /* Wrap text content in a flex container */
+    .product-card[data-name="Black & Blue"] .product-card-inner > h3,
+    .product-card-special .product-card-inner > h3,
+    .product-card[data-name="Black & Blue"] .product-card-inner > p,
+    .product-card-special .product-card-inner > p,
+    .product-card[data-name="Black & Blue"] .product-card-inner > .special-badge,
+    .product-card-special .product-card-inner > .special-badge {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+    
     .product-card[data-name="Black & Blue"] .product-select-indicator,
     .product-card-special .product-select-indicator {
+        position: absolute !important;
         top: 0.5rem !important;
         right: 0.5rem !important;
+        z-index: 3 !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-emoji,
     .product-card-special .product-emoji {
         top: 0.5rem !important;
         right: 0.5rem !important;
+        z-index: 2 !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-card-inner > h3,
@@ -3201,6 +3215,7 @@ body {
         margin-bottom: 0.25rem !important;
         font-size: 1rem !important;
         text-align: left !important;
+        margin-top: 0 !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-card-inner > p,
@@ -3215,12 +3230,14 @@ body {
     .product-card-special .special-badge {
         display: inline-block !important;
         margin-top: 0 !important;
+        margin-bottom: 0 !important;
         text-align: left !important;
+        width: auto !important;
     }
     
     .product-card[data-name="Black & Blue"] .product-quantity-controls,
     .product-card-special .product-quantity-controls {
-        margin-top: 0 !important;
+        margin-top: 0.5rem !important;
         justify-content: flex-start !important;
     }
 
