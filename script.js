@@ -867,30 +867,82 @@ if (orderButton) {
         const customerName = document.getElementById('customerName')?.value.trim() || '';
         const deliveryAddress = document.getElementById('deliveryAddress')?.value.trim() || '';
         const eircode = document.getElementById('eircode')?.value.trim() || '';
-        const contactInfo = document.getElementById('contactInfo')?.value.trim() || '';
+        const customerEmail = document.getElementById('customerEmail')?.value.trim() || '';
+        const customerPhone = document.getElementById('customerPhone')?.value.trim() || '';
         
-        if (!customerName || !deliveryAddress || !eircode || !contactInfo) {
-            showNotification('Please fill in all required fields (Name, Address, Eircode, and Contact)', 'warning');
+        // Validate required fields
+        if (!customerName || !deliveryAddress || !eircode || !customerEmail) {
+            showNotification('Please fill in all required fields (Name, Address, Eircode, and Email)', 'warning');
             return;
         }
         
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(customerEmail)) {
+            showNotification('Please enter a valid email address', 'warning');
+            return;
+        }
+        
+        // Combine email and phone for contact info (for business owner email)
+        const contactInfo = customerPhone ? `${customerEmail} | Phone: ${customerPhone}` : customerEmail;
+        
         // Show loading state
         orderButton.disabled = true;
-        orderButton.innerHTML = '<span>Copying Order...</span>';
+        orderButton.innerHTML = '<span>Sending Order...</span>';
         
-        // Copy order details to clipboard
+        // Generate order details
         const pricing = getPricingForQuantity(totalQty);
         const orderDetails = generateOrderDetails(pricing);
-        const orderText = formatOrderText(orderDetails, customerName, deliveryAddress, eircode, contactInfo);
+        const orderText = formatOrderText(orderDetails, customerName, deliveryAddress, eircode, customerEmail, customerPhone);
         
-        copyToClipboard(orderText);
-        showNotification('✅ Order details copied to clipboard! Paste them in your message/email to complete your order.', 'success');
+        // Generate order number
+        const orderNumber = generateOrderNumber();
         
-        // Reset button after a short delay
+        // Try to send emails via EmailJS
+        try {
+            // Send email to business owner
+            await sendOrderEmail(orderDetails, customerName, deliveryAddress, eircode, contactInfo, orderNumber);
+            
+            // Send confirmation email to customer (use email directly)
+            await sendCustomerConfirmationEmail(orderDetails, customerName, deliveryAddress, eircode, customerEmail, orderNumber);
+            
+            // Success - show confirmation
+            showNotification('✅ Order submitted successfully! Check your email for order confirmation and payment instructions.', 'success');
+            
+            // Clear form after successful submission
+            setTimeout(() => {
+                document.getElementById('customerName').value = '';
+                document.getElementById('deliveryAddress').value = '';
+                document.getElementById('eircode').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerPhone').value = '';
+                // Clear cart
+                cart = {};
+                saveCartToStorage();
+                updateCart();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Email sending failed:', error);
+            
+            // Check if it's a configuration error
+            const errorMessage = error.message || error.toString();
+            if (errorMessage.includes('not configured') || errorMessage.includes('YOUR_')) {
+                // Configuration not set up yet
+                copyToClipboard(orderText);
+                showNotification('📧 EmailJS not configured yet. Order details copied to clipboard. See EMAILJS_SETUP.md to enable email notifications.', 'warning');
+            } else {
+                // Other error (network, API, etc.)
+                copyToClipboard(orderText);
+                showNotification('⚠️ Email failed. Order details copied to clipboard as backup. Please email us directly.', 'warning');
+            }
+        }
+        
+        // Reset button after a delay
         setTimeout(() => {
             orderButton.disabled = false;
-            orderButton.innerHTML = '<span>Copy Order Details</span><svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-        }, 2000);
+            orderButton.innerHTML = '<span>Submit Order Request</span><svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }, 3000);
     });
 }
 
@@ -918,12 +970,16 @@ function generateOrderDetails(pricing) {
     };
 }
 
-function formatOrderText(orderDetails, customerName, deliveryAddress, eircode, contactInfo) {
+function formatOrderText(orderDetails, customerName, deliveryAddress, eircode, customerEmail, customerPhone) {
     let text = `SECURITY KITTY ORDER\n\n`;
     text += `NAME: ${customerName || '[Your Name]'}\n`;
     text += `DELIVERY ADDRESS: ${deliveryAddress || '[Your Address]'}\n`;
     text += `EIRCODE: ${eircode || '[Your Eircode]'}\n`;
-    text += `CONTACT: ${contactInfo || '[Your Email/Phone]'}\n\n`;
+    text += `EMAIL: ${customerEmail || '[Your Email]'}\n`;
+    if (customerPhone) {
+        text += `PHONE: ${customerPhone}\n`;
+    }
+    text += '\n';
     text += `SECURITY KITTY STYLES:\n`;
     orderDetails.items.forEach(item => {
         text += `${item}\n`;
@@ -963,6 +1019,177 @@ function fallbackCopy(text) {
         console.error('Fallback copy failed:', err);
     }
     document.body.removeChild(textarea);
+}
+
+// ============================================
+// EMAIL ORDER FUNCTIONALITY
+// ============================================
+
+/**
+ * Send order email via EmailJS
+ * 
+ * SETUP INSTRUCTIONS:
+ * 1. Sign up for free at https://www.emailjs.com/
+ * 2. Create an email service (Gmail, Outlook, etc.)
+ * 3. Create an email template with these variables:
+ *    - {{customer_name}}
+ *    - {{delivery_address}}
+ *    - {{eircode}}
+ *    - {{contact_info}}
+ *    - {{order_items}}
+ *    - {{total_quantity}}
+ *    - {{total_price}}
+ *    - {{savings}}
+ *    - {{bonus_item}}
+ * 4. Get your Service ID, Template ID, and Public Key
+ * 5. Replace the values below with your actual IDs
+ */
+// Generate unique order number
+function generateOrderNumber() {
+    // Generate a random number between 100 and 99999 (3-5 digits)
+    const random = Math.floor(Math.random() * 99900) + 100;
+    return `SK${random}`;
+}
+
+async function sendOrderEmail(orderDetails, customerName, deliveryAddress, eircode, contactInfo, orderNumber) {
+    // Check if EmailJS is loaded
+    if (typeof emailjs === 'undefined') {
+        throw new Error('EmailJS not configured. Please set up EmailJS first. See EMAILJS_SETUP.md for instructions.');
+    }
+    
+    // CONFIGURATION - EmailJS details
+    const EMAILJS_SERVICE_ID = 'service_dwfdblm';
+    const EMAILJS_TEMPLATE_ID = 'template_vjhd31z';
+    
+    // Check if EmailJS is properly configured
+    if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID' || EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID') {
+        throw new Error('EmailJS not configured. Please update EMAILJS_SERVICE_ID and EMAILJS_TEMPLATE_ID in script.js. See EMAILJS_SETUP.md for instructions.');
+    }
+    
+    // Format order items for email
+    const orderItemsList = orderDetails.items.join('\n');
+    
+    // Prepare email template parameters
+    const templateParams = {
+        customer_name: customerName,
+        delivery_address: deliveryAddress,
+        eircode: eircode,
+        customer_email: contactInfo.split(' | Phone: ')[0], // Extract email (before " | Phone:")
+        customer_phone: contactInfo.includes(' | Phone: ') ? contactInfo.split(' | Phone: ')[1] : '',
+        contact_info: contactInfo, // Keep for backward compatibility
+        order_items: orderItemsList,
+        total_quantity: orderDetails.quantity.toString(),
+        total_price: `€${orderDetails.total}`,
+        savings: orderDetails.savings > 0 ? `€${orderDetails.savings}` : '€0',
+        bonus_item: orderDetails.bonus ? 'Yes - Black & Blue Edition (FREE)' : 'No',
+        order_number: orderNumber,
+        order_date: new Date().toLocaleDateString('en-IE', { 
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    };
+    
+    // Send email via EmailJS
+    try {
+        const response = await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams
+        );
+        
+        console.log('Email sent successfully:', response);
+        return response;
+    } catch (error) {
+        console.error('EmailJS error:', error);
+        // Provide more helpful error message
+        if (error.text) {
+            console.error('EmailJS error details:', error.text);
+        }
+        throw error;
+    }
+}
+
+// ============================================
+// CUSTOMER CONFIRMATION EMAIL
+// ============================================
+
+/**
+ * Send order confirmation email to customer with payment instructions
+ * 
+ * You'll need to create a second EmailJS template for customer confirmations
+ * Template ID will be set below
+ */
+async function sendCustomerConfirmationEmail(orderDetails, customerName, deliveryAddress, eircode, customerEmail, orderNumber) {
+    // Check if EmailJS is loaded
+    if (typeof emailjs === 'undefined') {
+        throw new Error('EmailJS not configured.');
+    }
+    
+    // CONFIGURATION - Use same service as business owner emails
+    const EMAILJS_SERVICE_ID = 'service_dwfdblm';
+    
+    // CONFIGURATION - Customer confirmation template
+    const EMAILJS_CUSTOMER_TEMPLATE_ID = 'template_n9q4uzu';
+    
+    // CONFIGURATION - Your Revolut payment link
+    const REVOLUT_PAYMENT_LINK = 'https://revolut.me/seckit';
+    
+    // Format order items for customer email (more customer-friendly format)
+    const orderItemsList = orderDetails.items.map((item, index) => {
+        return `${index + 1}. ${item}`;
+    }).join('\n');
+    
+    // Validate email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerEmail || !emailRegex.test(customerEmail)) {
+        console.error('Invalid email address provided:', customerEmail);
+        console.log('Skipping customer confirmation email.');
+        return;
+    }
+    
+    console.log('Sending customer confirmation email to:', customerEmail);
+    
+    // Prepare customer email template parameters
+    const templateParams = {
+        to_email: customerEmail, // EmailJS will use this if template "To Email" field is set to {{to_email}}
+        customer_name: customerName,
+        order_number: orderNumber,
+        order_items: orderItemsList,
+        total_quantity: orderDetails.quantity.toString(),
+        total_price: `€${orderDetails.total}`,
+        payment_amount: `€${orderDetails.total}`,
+        revolut_link: REVOLUT_PAYMENT_LINK !== 'YOUR_REVOLUT_PAYMENT_LINK' ? REVOLUT_PAYMENT_LINK : '',
+        order_date: new Date().toLocaleDateString('en-IE', { 
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }),
+        delivery_address: deliveryAddress,
+        eircode: eircode
+    };
+    
+    // Send email to customer
+    try {
+        const response = await emailjs.send(
+            EMAILJS_SERVICE_ID, // Use same service
+            EMAILJS_CUSTOMER_TEMPLATE_ID,
+            templateParams
+        );
+        
+        console.log('Customer confirmation email sent successfully:', response);
+        return response;
+    } catch (error) {
+        console.error('Customer email error:', error);
+        // Don't throw - customer email failure shouldn't block the order
+        // The business owner still gets the order notification
+    }
 }
 
 // ============================================

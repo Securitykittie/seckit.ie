@@ -16,3 +16,8 @@ config.local.js
 # Ignore deployment scripts (optional)
 deploy.bat
 
+# Ignore documentation and setup files (not needed for website)
+docs/
+# Ignore screenshot images (not needed for website)
+*.png
+!STYLES/**/*.png
