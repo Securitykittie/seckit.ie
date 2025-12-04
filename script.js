@@ -906,8 +906,8 @@ if (orderButton) {
             // Send confirmation email to customer (use email directly)
             await sendCustomerConfirmationEmail(orderDetails, customerName, deliveryAddress, eircode, customerEmail, orderNumber);
             
-            // Success - show confirmation
-            showNotification('✅ Order submitted successfully! Check your email for order confirmation and payment instructions.', 'success');
+            // Success - show confirmation modal
+            showOrderConfirmationModal(orderNumber, customerEmail);
             
             // Clear form after successful submission
             setTimeout(() => {
@@ -1230,6 +1230,150 @@ function showNotification(message, type = 'info') {
         notification.style.animation = 'slideOutRight 0.3s ease-out';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
+}
+
+// ============================================
+// ORDER CONFIRMATION MODAL
+// ============================================
+
+function showOrderConfirmationModal(orderNumber, customerEmail) {
+    const modal = document.getElementById('orderConfirmationModal');
+    const emailSpan = document.getElementById('confirmationEmail');
+    const orderNumberSpan = document.getElementById('confirmationOrderNumber');
+    
+    if (emailSpan) emailSpan.textContent = customerEmail;
+    if (orderNumberSpan) orderNumberSpan.textContent = orderNumber;
+    
+    if (modal) {
+        modal.classList.add('show');
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeOrderConfirmationModal() {
+    const modal = document.getElementById('orderConfirmationModal');
+    if (modal) {
+        modal.classList.remove('show');
+        // Restore body scroll
+        document.body.style.overflow = '';
+    }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('orderConfirmationModal');
+    if (modal && e.target === modal.querySelector('.info-popup-overlay')) {
+        closeOrderConfirmationModal();
+    }
+});
+
+// ============================================
+// CONTACT FORM
+// ============================================
+
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('contactSubmitBtn');
+        const contactName = document.getElementById('contactName').value.trim();
+        const contactEmail = document.getElementById('contactEmail').value.trim();
+        const contactMessage = document.getElementById('contactMessage').value.trim();
+        
+        // Validate
+        if (!contactName || !contactEmail || !contactMessage) {
+            showNotification('Please fill in all fields', 'warning');
+            return;
+        }
+        
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(contactEmail)) {
+            showNotification('Please enter a valid email address', 'warning');
+            return;
+        }
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span>Sending...</span>';
+        
+        try {
+            // Send contact form email via EmailJS
+            const EMAILJS_SERVICE_ID = 'service_dwfdblm';
+            const EMAILJS_CONTACT_TEMPLATE_ID = 'YOUR_CONTACT_TEMPLATE_ID'; // Replace with your contact template ID
+            
+            if (EMAILJS_CONTACT_TEMPLATE_ID === 'YOUR_CONTACT_TEMPLATE_ID') {
+                // Fallback: Use the order template if contact template not set up yet
+                const templateParams = {
+                    customer_name: contactName,
+                    customer_email: contactEmail, // Make email visible in customer_email field
+                    customer_phone: '', // Empty for contact forms
+                    contact_info: `📧 EMAIL: ${contactEmail} | 📝 CONTACT FORM SUBMISSION`, // Make it very clear this is the email
+                    delivery_address: 'Contact Form Submission - Not a delivery address',
+                    eircode: 'N/A',
+                    order_items: `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📝 CONTACT FORM MESSAGE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${contactMessage}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+                    total_quantity: '1',
+                    total_price: 'Contact Form',
+                    savings: '€0',
+                    bonus_item: 'No',
+                    order_number: 'CONTACT-' + Date.now().toString().slice(-6),
+                    order_date: new Date().toLocaleDateString('en-IE', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                };
+                
+                await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    'template_vjhd31z', // Using order template as fallback
+                    templateParams
+                );
+            } else {
+                // Use dedicated contact template (recommended)
+                const templateParams = {
+                    from_name: contactName,
+                    from_email: contactEmail,
+                    message: contactMessage,
+                    reply_to: contactEmail,
+                    date: new Date().toLocaleDateString('en-IE', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                };
+                
+                await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_CONTACT_TEMPLATE_ID,
+                    templateParams
+                );
+            }
+            
+            // Success
+            showNotification('✅ Message sent successfully! We\'ll get back to you soon.', 'success');
+            
+            // Clear form
+            contactForm.reset();
+            
+        } catch (error) {
+            console.error('Contact form error:', error);
+            showNotification('⚠️ Failed to send message. Please try again or email us directly.', 'warning');
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    });
 }
 
 // Add notification animations
