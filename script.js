@@ -907,7 +907,13 @@ if (orderButton) {
             await sendCustomerConfirmationEmail(orderDetails, customerName, deliveryAddress, eircode, customerEmail, orderNumber);
             
             // Success - show confirmation modal
-            showOrderConfirmationModal(orderNumber, customerEmail);
+            showOrderConfirmationModal(orderNumber, customerEmail, orderDetails.total);
+            
+            // Open Revolut payment link in new tab
+            const paymentAmountInCents = Math.round(orderDetails.total * 100);
+            const encodedOrderNumber = encodeURIComponent(orderNumber);
+            const revolutLink = `https://revolut.me/seckit?amount=${paymentAmountInCents}&note=${encodedOrderNumber}`;
+            window.open(revolutLink, '_blank');
             
             // Clear form after successful submission
             setTimeout(() => {
@@ -1135,8 +1141,8 @@ async function sendCustomerConfirmationEmail(orderDetails, customerName, deliver
     // CONFIGURATION - Customer confirmation template
     const EMAILJS_CUSTOMER_TEMPLATE_ID = 'template_n9q4uzu';
     
-    // CONFIGURATION - Your Revolut payment link
-    const REVOLUT_PAYMENT_LINK = 'https://revolut.me/seckit';
+    // CONFIGURATION - Your Revolut payment link base URL
+    const REVOLUT_PAYMENT_BASE = 'https://revolut.me/seckit';
     
     // Format order items for customer email (more customer-friendly format)
     const orderItemsList = orderDetails.items.map((item, index) => {
@@ -1153,6 +1159,13 @@ async function sendCustomerConfirmationEmail(orderDetails, customerName, deliver
     
     console.log('Sending customer confirmation email to:', customerEmail);
     
+    // Build Revolut payment link with pre-filled amount and order number
+    // Revolut.me supports URL parameters: ?amount=XX.XX&note=ORDER_NUMBER
+    // IMPORTANT: Revolut expects amount in cents (smallest currency unit), so multiply by 100
+    const paymentAmountInCents = Math.round(orderDetails.total * 100); // Convert euros to cents
+    const encodedOrderNumber = encodeURIComponent(orderNumber); // URL encode the order number
+    const revolutLink = `${REVOLUT_PAYMENT_BASE}?amount=${paymentAmountInCents}&note=${encodedOrderNumber}`;
+    
     // Prepare customer email template parameters
     const templateParams = {
         to_email: customerEmail, // EmailJS will use this if template "To Email" field is set to {{to_email}}
@@ -1162,7 +1175,7 @@ async function sendCustomerConfirmationEmail(orderDetails, customerName, deliver
         total_quantity: orderDetails.quantity.toString(),
         total_price: `€${orderDetails.total}`,
         payment_amount: `€${orderDetails.total}`,
-        revolut_link: REVOLUT_PAYMENT_LINK !== 'YOUR_REVOLUT_PAYMENT_LINK' ? REVOLUT_PAYMENT_LINK : '',
+        revolut_link: revolutLink,
         order_date: new Date().toLocaleDateString('en-IE', { 
             weekday: 'long',
             year: 'numeric',
@@ -1236,7 +1249,7 @@ function showNotification(message, type = 'info') {
 // ORDER CONFIRMATION MODAL
 // ============================================
 
-function showOrderConfirmationModal(orderNumber, customerEmail) {
+function showOrderConfirmationModal(orderNumber, customerEmail, orderTotal) {
     const modal = document.getElementById('orderConfirmationModal');
     const emailSpan = document.getElementById('confirmationEmail');
     const orderNumberSpan = document.getElementById('confirmationOrderNumber');
