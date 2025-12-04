@@ -1,72 +1,60 @@
-# Security Kitty Website
+# 🐾 Security Kitty
 
-A modern, dynamic e-commerce website for Security Kitty products.
+**Sweet on the surface. Serious in your pocket.**
 
-## Features
+A cute, quirky accessory that just happens to feel good in your hand and makes a statement while dangling off your keys or bag. Designed with attitude and made using **eco-friendly 3D printing**, the Security Kitty comes in a range of bold styles to suit your vibe.
 
-- Modern, responsive design
-- Interactive product selection
-- Dynamic pricing tiers
-- Shopping cart functionality
-- Personality quiz
-- Smooth animations and transitions
+## 🌐 Visit the Site
 
-## Free Hosting Options
+**[👉 Shop Security Kitty Now](https://securitykittie.github.io/seckit.ie/)**
 
-### Option 1: GitHub Pages (Recommended - Easiest)
+## 🎯 What is Security Kitty?
 
-1. **Create a GitHub account** (if you don't have one): https://github.com/signup
+Security Kitty isn't just a keychain—it's a statement piece. Each one is:
+- **🌱 Eco-friendly** - 3D printed with sustainable materials
+- **🎨 Unique** - 17 distinct styles to choose from
+- **📍 Made in Dublin** - Hand-printed with care and gratitude
+- **💯 Handmade** - 100% hand-printed, packed with care, posted with gratitude
 
-2. **Create a new repository:**
-   - Go to https://github.com/new
-   - Name it `seckit` (or any name you like)
-   - Make it **Public**
-   - Click "Create repository"
+## 🧠 Take the Personality Quiz!
 
-3. **Upload your files:**
-   - Click "uploading an existing file"
-   - Drag and drop all your files (index.html, styles.css, script.js, quiz.html, quiz.js, STYLES folder)
-   - Commit the changes
+**Find your perfect Security Kitty match!**
 
-4. **Enable GitHub Pages:**
-   - Go to Settings → Pages
-   - Under "Source", select "main" branch
-   - Click "Save"
-   - Your site will be live at: `https://yourusername.github.io/seckit/`
+Our personality quiz analyzes your questionable life choices, relationship patterns, and friend group dynamics to match you with the Security Kitty style that fits your vibe. It's like a psychological assessment, but funnier and with more craic.
 
-### Option 2: Netlify (Also Very Easy)
+**[🎯 Take the Quiz →](https://securitykittie.github.io/seckit.ie/quiz.html)**
 
-1. **Create a Netlify account:** https://app.netlify.com/signup
+The quiz will reveal which category you belong to:
+- **💅 The Drama Queens** - Extra, Bold, Main Character Energy
+- **😸 The Sound Ones** - Kind, Balanced, Sweet But Strong
+- **❄️ The Cool & Collected** - Calm, Zen, Got It Together
+- **🖤 The Mysterious & Independent** - Dark, Intuitive, Do Their Own Thing
 
-2. **Deploy:**
-   - Drag and drop your entire project folder onto Netlify
-   - Your site will be live instantly with a random URL
-   - You can customize the domain name in settings
+## 🎨 17 Unique Styles
 
-### Option 3: Vercel
+From "Sugar Punch" to "Midnight Mischief," each Security Kitty has its own personality and story. Browse the full collection to find your perfect match—or let the quiz decide for you!
 
-1. **Create a Vercel account:** https://vercel.com/signup
-2. **Import your project** (drag and drop or connect GitHub)
-3. **Deploy** - it's automatic!
+## 💰 Pricing
 
-## File Structure
+- **1 Item:** €10
+- **2 Items:** €18 (Save €2)
+- **3 Items:** €25 (Save €5)
+- **4 Items:** €30 (Save €10)
+- **5+ Items:** €35+ (Save €15+ and get a **FREE Black & Blue Edition**!)
 
-```
-Seckit/
-├── index.html
-├── styles.css
-├── script.js
-├── quiz.html
-├── quiz.js
-├── STYLES/
-│   └── (product images)
-└── README.md
-```
+Free delivery in Ireland. Bulk discounts apply automatically.
 
-## Notes
+## 🎁 Special Offer
 
-- All hosting options above are **completely free**
-- No credit card required
-- Your site will be accessible worldwide
-- You can use a custom domain later if you want
+Order 5 or more items and receive the **Black & Blue Edition** absolutely FREE! This special bonus style is our way of saying thanks for supporting the bigger dream.
+
+## 💭 The Mission
+
+This isn't a business. It's not a big brand. This is a project to help support the launch of a much bigger idea. By grabbing one, you're not just getting something unique—**you're helping turn a bigger dream into reality.**
+
+Hand-printed in Dublin. Packed with care. Posted with gratitude.
+
+---
+
+**[🛒 Shop Now](https://securitykittie.github.io/seckit.ie/)** | **[🧠 Take the Quiz](https://securitykittie.github.io/seckit.ie/quiz.html)**
 

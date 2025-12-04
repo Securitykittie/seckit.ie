@@ -13,3 +13,6 @@ Thumbs.db
 .env
 config.local.js
 
+# Ignore deployment scripts (optional)
+deploy.bat
+
